@@ -15,21 +15,28 @@ struct CategoryView: View {
         List {
             if category == .warmup {
                 Section { WarmupPanel(clips: clips) }
-            } else if clips.count > 1 {
+            } else {
                 Section {
-                    Button {
-                        let others = clips.filter { $0.id != player.nowPlaying?.id }
-                        if let pick = others.randomElement() { player.play(pick) }
-                    } label: {
-                        Label("Play Random \(category.title)", systemImage: "shuffle")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
+                    if clips.count > 1 {
+                        Button {
+                            let others = clips.filter { $0.id != player.nowPlaying?.id }
+                            if let pick = others.randomElement() { player.play(pick) }
+                        } label: {
+                            Label("Play Random \(category.title)", systemImage: "shuffle")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(category.color)
+                        .controlSize(.large)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        .listRowSeparator(.hidden)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(category.color)
-                    .controlSize(.large)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
+                    StopAllButton()
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        .listRowSeparator(.hidden)
                 }
             }
 
@@ -137,7 +144,7 @@ struct WarmupPanel: View {
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
-                stopButton
+                StopAllButton()
             } else {
                 Button {
                     player.startWarmup(clips: clips, duration: store.warmupDuration)
@@ -150,7 +157,7 @@ struct WarmupPanel: View {
                 .tint(ClipCategory.warmup.color)
                 .controlSize(.large)
                 .disabled(clips.isEmpty)
-                stopButton
+                StopAllButton()
 
                 Stepper(value: $store.warmupDuration, in: 30...1800, step: 15) {
                     Text("Warmup length: \(store.warmupDuration.mmss)").monospacedDigit()
@@ -163,8 +170,13 @@ struct WarmupPanel: View {
         .padding(.vertical, 8)
     }
 
-    /// Stops whatever is playing in any section, immediately.
-    private var stopButton: some View {
+}
+
+/// Big red button at the top of every section. Stops whatever is playing, in any section, immediately.
+struct StopAllButton: View {
+    @EnvironmentObject private var player: PlaybackController
+
+    var body: some View {
         Button(role: .destructive) {
             player.stop(fade: false)
         } label: {
