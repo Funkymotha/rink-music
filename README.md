@@ -25,6 +25,9 @@ Tap the slider icon on a clip to open the timeline editor:
 
 Volume and fade changes apply live while a preview is playing. Swipe left on a clip to delete or duplicate it. Duplicating lets you cut several segments from one song. Tap **Edit** to reorder clips (this sets the warmup play order).
 
+## Browser simulator
+`simulator/rink-music-simulator.html` is a clickable copy of the app that runs in any web browser (double-click it). It has generated demo clips, and you can load your own audio with **+**. It's for trying the layout and game-day flow; nothing is saved between reloads.
+
 ## Installing from a Windows PC (no Mac)
 Every push to `main` runs the **Build iPhone app** GitHub Action on a cloud Mac.
 1. Open the repo on GitHub → **Actions** → latest **Build iPhone app** run → download **RinkMusic-ipa** at the bottom, then unzip it to get `RinkMusic.ipa`.
