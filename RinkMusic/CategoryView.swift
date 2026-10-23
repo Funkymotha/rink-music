@@ -57,6 +57,10 @@ struct CategoryView: View {
                 .onDelete { offsets in delete(offsets.map { clips[$0].id }) }
             } header: {
                 Text(category == .warmup ? "Warmup playlist (plays in order)" : "\(clips.count) clips — tap to play")
+            } footer: {
+                if clips.count > 1 {
+                    Text("To change the order, tap Edit and drag clips by their ≡ handles.")
+                }
             }
         }
         .toolbar {
