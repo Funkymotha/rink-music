@@ -128,16 +128,16 @@ struct WarmupPanel: View {
                     .font(.system(size: 64, weight: .bold, design: .rounded))
                     .monospacedDigit()
                 Text("left in warmup").foregroundStyle(.secondary)
-                Button(role: .destructive) {
+                Button {
                     player.stop(fade: true)
                 } label: {
-                    Label("End Warmup", systemImage: "stop.fill")
+                    Label("Fade Out Warmup", systemImage: "speaker.wave.1.fill")
                         .font(.title3.bold())
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
+                .buttonStyle(.bordered)
                 .controlSize(.large)
+                stopButton
             } else {
                 Button {
                     player.startWarmup(clips: clips, duration: store.warmupDuration)
@@ -150,6 +150,7 @@ struct WarmupPanel: View {
                 .tint(ClipCategory.warmup.color)
                 .controlSize(.large)
                 .disabled(clips.isEmpty)
+                stopButton
 
                 Stepper(value: $store.warmupDuration, in: 30...1800, step: 15) {
                     Text("Warmup length: \(store.warmupDuration.mmss)").monospacedDigit()
@@ -160,6 +161,21 @@ struct WarmupPanel: View {
             }
         }
         .padding(.vertical, 8)
+    }
+
+    /// Stops whatever is playing in any section, immediately.
+    private var stopButton: some View {
+        Button(role: .destructive) {
+            player.stop(fade: false)
+        } label: {
+            Label("Stop", systemImage: "stop.fill")
+                .font(.title3.bold())
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.red)
+        .controlSize(.large)
+        .disabled(!player.isPlaying)
     }
 }
 
