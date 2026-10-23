@@ -8,6 +8,7 @@ targets:
     type: application
     platform: iOS
     sources: [RinkMusic]
+    scheme: {}
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.rinkmusic

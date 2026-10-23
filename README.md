@@ -25,7 +25,16 @@ Tap the slider icon on a clip to open the timeline editor:
 
 Volume and fade changes apply live while a preview is playing. Swipe left on a clip to delete or duplicate it. Duplicating lets you cut several segments from one song. Tap **Edit** to reorder clips (this sets the warmup play order).
 
-## Building
+## Installing from a Windows PC (no Mac)
+Every push to `main` runs the **Build iPhone app** GitHub Action on a cloud Mac.
+1. Open the repo on GitHub → **Actions** → latest **Build iPhone app** run → download **RinkMusic-ipa** at the bottom, then unzip it to get `RinkMusic.ipa`.
+2. Install [Sideloadly](https://sideloadly.io) and iTunes **from apple.com** (not the Microsoft Store version).
+3. Plug in the iPhone, drag `RinkMusic.ipa` into Sideloadly, enter your Apple ID, click **Start**.
+4. On the iPhone: Settings → Privacy & Security → **Developer Mode** → on (phone restarts), then Settings → General → **VPN & Device Management** → trust your Apple ID.
+
+With a free Apple ID the app expires after 7 days; re-run Sideloadly to refresh it.
+
+## Building on a Mac
 Requires a Mac with Xcode 15 or newer. The app targets iOS 17+.
 
 **Option A, XcodeGen (quickest):**

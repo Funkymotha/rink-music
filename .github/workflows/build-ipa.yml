@@ -1,0 +1,49 @@
+name: Build iPhone app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen
+
+      - name: Build (unsigned — Sideloadly signs it with your Apple ID)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project RinkMusic.xcodeproj \
+            -scheme RinkMusic \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            2>&1 | tee build.log
+
+      - name: Summarize compile errors
+        if: failure()
+        run: |
+          echo '## Compile errors' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -E ': (error|fatal error):' build.log | sort -u >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Package .ipa
+        run: |
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/RinkMusic.app Payload/
+          zip -qry RinkMusic.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RinkMusic-ipa
+          path: RinkMusic.ipa
